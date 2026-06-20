@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enigma Notes — Your Personal Journal</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Caveat:wght@400..700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Warm Wooden Desk Background Overlay -->
+  <div class="desk-bg"></div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-logo">
+        <div class="logo-icon">
+          <i class="fa-solid fa-feather-pointed"></i>
+        </div>
+        <div class="logo-text">
+          <h1>Enigma<span>Diary</span></h1>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Logged out state -->
+        <div id="auth-status-logged-out" class="auth-status-group">
+          <button id="nav-login-btn" class="btn btn-secondary">
+            <i class="fa-solid fa-key"></i> Unlock Journal
+          </button>
+        </div>
+
+        <!-- Logged in state -->
+        <div id="auth-status-logged-in" class="auth-status-group hidden">
+          <div class="user-profile-badge">
+            <i class="fa-solid fa-feather"></i>
+            <span id="user-display-name">Username</span>'s Log
+          </div>
+          <button id="nav-logout-btn" class="btn btn-danger">
+            <i class="fa-solid fa-lock"></i> Close Journal
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="main-content">
+      <!-- Left Column: Note Editor (resembles a notebook page) -->
+      <aside class="editor-section">
+        <div class="editor-card diary-page">
+          <div class="editor-header">
+            <h2 id="editor-title"><i class="fa-solid fa-pen-fancy"></i> Write Log</h2>
+            <button id="cancel-edit-btn" class="btn-icon hidden" title="Cancel edit">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <form id="note-form" class="note-form">
+            <div class="form-group">
+              <label for="note-title-input">Entry Title</label>
+              <input type="text" id="note-title-input" placeholder="Title of your entry..." required autocomplete="off">
+            </div>
+
+            <div class="form-group">
+              <label for="note-content-input">What's on your mind?</label>
+              <textarea id="note-content-input" placeholder="Start writing..." required rows="8"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>Paper Style</label>
+              <div class="color-picker">
+                <!-- Soft, pastel organic paper shades -->
+                <button type="button" class="color-dot active" data-color="#fefbf3" style="background-color: #fefbf3;" title="Ivory Parchment"></button>
+                <button type="button" class="color-dot" data-color="#e0f2fe" style="background-color: #e0f2fe;" title="Sky Blue"></button>
+                <button type="button" class="color-dot" data-color="#dcfce7" style="background-color: #dcfce7;" title="Sage Green"></button>
+                <button type="button" class="color-dot" data-color="#fef9c3" style="background-color: #fef9c3;" title="Manila Yellow"></button>
+                <button type="button" class="color-dot" data-color="#ffedd5" style="background-color: #ffedd5;" title="Warm Peach"></button>
+                <button type="button" class="color-dot" data-color="#f3e8ff" style="background-color: #f3e8ff;" title="Lavender"></button>
+                <button type="button" class="color-dot" data-color="#fce7f3" style="background-color: #fce7f3;" title="Dusty Rose"></button>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" id="clear-form-btn" class="btn btn-secondary">
+                <i class="fa-solid fa-eraser"></i> Erase
+              </button>
+              <button type="submit" id="save-note-btn" class="btn btn-primary">
+                <i class="fa-solid fa-ink-pen"></i> Ink Entry
+              </button>
+            </div>
+          </form>
+        </div>
+      </aside>
+
+      <!-- Right Column: Notes List Grid -->
+      <section class="notes-display-section">
+        <div class="section-title-bar">
+          <h2><i class="fa-solid fa-book-open"></i> Collected Pages</h2>
+          <div id="sync-status" class="sync-status">
+            <span class="status-indicator offline"></span>
+            <span id="sync-text">Unauthenticated (Previewing Demo)</span>
+          </div>
+        </div>
+
+        <div id="notes-grid" class="notes-grid">
+          <!-- Notes cards will be inserted here dynamically -->
+        </div>
+
+        <!-- Empty state placeholder -->
+        <div id="empty-state" class="empty-state hidden">
+          <div class="empty-icon">
+            <i class="fa-solid fa-scroll"></i>
+          </div>
+          <h3>Your diary is empty</h3>
+          <p>Ink your very first entry using the quill on the left, or unlock your journal to sync with your private ledger.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- AUTHENTICATION MODAL -->
+  <div id="auth-modal" class="modal-overlay hidden">
+    <div class="modal-content diary-page">
+      <button id="close-modal-btn" class="modal-close" title="Close">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="auth-tabs">
+        <button id="tab-login" class="auth-tab active" data-mode="login">Unlock Journal</button>
+        <button id="tab-signup" class="auth-tab" data-mode="signup">Register Key</button>
+      </div>
+
+      <div class="auth-header">
+        <h3 id="auth-title">Locked Ledger</h3>
+        <p id="auth-subtitle">Verify your identity to read and write private notes.</p>
+      </div>
+
+      <form id="auth-form" class="auth-form">
+        <div class="form-group">
+          <label for="auth-username"><i class="fa-solid fa-signature"></i> Identity</label>
+          <input type="text" id="auth-username" placeholder="Your username..." required minlength="3" autocomplete="username">
+        </div>
+
+        <div class="form-group">
+          <label for="auth-password"><i class="fa-solid fa-key"></i> Passphrase</label>
+          <input type="password" id="auth-password" placeholder="Your passphrase..." required minlength="6" autocomplete="current-password">
+        </div>
+
+        <button type="submit" id="auth-submit-btn" class="btn btn-primary btn-block">
+          <span>Verify</span> <i class="fa-solid fa-feather"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Custom Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>
