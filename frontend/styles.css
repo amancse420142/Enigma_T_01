@@ -4,9 +4,9 @@
 
 :root {
   /* Fonts */
-  --font-headers: 'Playfair Display', serif;
-  --font-body: 'Inter', sans-serif;
-  --font-handwriting: 'Caveat', cursive;
+  --font-headers: 'Cormorant Garamond', serif;
+  --font-body: 'Lora', serif;
+  --font-handwriting: 'Homemade Apple', cursive;
 
   /* Theme Palette (Warm Leather, Parchment, Brass & Ink) */
   --bg-desk: radial-gradient(circle at center, #eae0d5 0%, #c6ac8f 100%);
