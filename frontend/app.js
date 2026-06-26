@@ -20,7 +20,7 @@ const DEMO_NOTES = [
   {
     _id: 'demo-1',
     title: 'Opening the Diary... 🖋️',
-    content: 'This journal is a local demonstration. Feel free to jot down daily reflections, draft ideas, or sketch memories.\n\nTo secure your writings permanently, unlock the journal in the top right to sync with your private digital vault (powered by MongoDB)!',
+    content: 'This journal is a local demonstration. Feel free to jot down daily reflections, draft ideas, or sketch memories.\n\nTo secure your writings permanently, unlock the journal in the top right to sync with your private digital vault!',
     color: '#fefbf3',
     updatedAt: new Date().toISOString()
   },
@@ -262,7 +262,7 @@ function updateAuthUI(isLoggedIn) {
     elements.userDisplayName.textContent = state.user ? state.user.username : 'User';
     
     elements.syncIndicator.className = 'status-indicator online';
-    elements.syncText.textContent = 'Ledger Synced with MongoDB';
+    elements.syncText.textContent = 'Ledger Synced';
   } else {
     elements.authLoggedOut.classList.remove('hidden');
     elements.authLoggedIn.classList.add('hidden');
