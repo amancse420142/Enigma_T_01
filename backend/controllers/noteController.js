@@ -5,6 +5,11 @@ const Note = require('../models/Note');
 // @access  Private
 const getNotes = async (req, res) => {
   try {
+    if (global.useMockDB) {
+      const mockDb = require('../config/mockDb');
+      const notes = await mockDb.getNotes(req.user.id);
+      return res.status(200).json(notes);
+    }
     const notes = await Note.find({ userId: req.user.id }).sort({ updatedAt: -1 });
     res.status(200).json(notes);
   } catch (error) {
@@ -21,6 +26,12 @@ const createNote = async (req, res) => {
   try {
     if (!title || !content) {
       return res.status(400).json({ message: 'Please add a title and content' });
+    }
+
+    if (global.useMockDB) {
+      const mockDb = require('../config/mockDb');
+      const note = await mockDb.createNote(title, content, color, req.user.id);
+      return res.status(201).json(note);
     }
 
     const note = await Note.create({
@@ -43,6 +54,19 @@ const updateNote = async (req, res) => {
   const { title, content, color } = req.body;
 
   try {
+    if (global.useMockDB) {
+      const mockDb = require('../config/mockDb');
+      try {
+        const updatedNote = await mockDb.updateNote(req.params.id, { title, content, color }, req.user.id);
+        if (!updatedNote) {
+          return res.status(404).json({ message: 'Note not found' });
+        }
+        return res.status(200).json(updatedNote);
+      } catch (err) {
+        return res.status(401).json({ message: err.message });
+      }
+    }
+
     const note = await Note.findById(req.params.id);
 
     if (!note) {
@@ -72,6 +96,19 @@ const updateNote = async (req, res) => {
 // @access  Private
 const deleteNote = async (req, res) => {
   try {
+    if (global.useMockDB) {
+      const mockDb = require('../config/mockDb');
+      try {
+        const success = await mockDb.deleteNote(req.params.id, req.user.id);
+        if (!success) {
+          return res.status(404).json({ message: 'Note not found' });
+        }
+        return res.status(200).json({ id: req.params.id, message: 'Note removed successfully' });
+      } catch (err) {
+        return res.status(401).json({ message: err.message });
+      }
+    }
+
     const note = await Note.findById(req.params.id);
 
     if (!note) {

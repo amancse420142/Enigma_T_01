@@ -19,6 +19,20 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: 'Please add all fields' });
     }
 
+    if (global.useMockDB) {
+      const mockDb = require('../config/mockDb');
+      const userExists = await mockDb.findUserByUsername(username);
+      if (userExists) {
+        return res.status(400).json({ message: 'Username is already taken' });
+      }
+      const user = await mockDb.createUser(username, password);
+      return res.status(201).json({
+        _id: user._id,
+        username: user.username,
+        token: generateToken(user._id)
+      });
+    }
+
     // Check if user exists
     const userExists = await User.findOne({ username });
     if (userExists) {
@@ -54,6 +68,20 @@ const loginUser = async (req, res) => {
   try {
     if (!username || !password) {
       return res.status(400).json({ message: 'Please add all fields' });
+    }
+
+    if (global.useMockDB) {
+      const mockDb = require('../config/mockDb');
+      const user = await mockDb.findUserByUsername(username);
+      if (user && (await mockDb.matchPassword(password, user.password))) {
+        return res.json({
+          _id: user._id,
+          username: user.username,
+          token: generateToken(user._id)
+        });
+      } else {
+        return res.status(401).json({ message: 'Invalid credentials' });
+      }
     }
 
     // Check for user username
